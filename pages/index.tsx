@@ -2,44 +2,68 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import Script from "next/script";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "../styles/Home.module.css";
 
 const Home: NextPage = () => {
-  const [user_id, setuser_id] = useState();
-  const [statusMessage, setStatusMessage] = useState();
-  const handleUserIdChange = (e) => {
-    setuser_id(e.target.value);
-  };
-  const register = (e) => {
-    if (!!window.UA) {
-      window.UA.then((sdk) => {
-        if (!!sdk.channel.id) {
-          sdk.channel.namedUser.set(user_id);
-          sdk.addEventListener("push", (e) => {
-            console.log(e);
-            setStatusMessage(
-              `Received message with title: ${e.push.title} and body: ${e.push.body}`
-            );
-          });
-          setStatusMessage(`${user_id} is registered. Waiting for message`);
-        } else console.log("UA channel not registered");
-      });
-    } else {
-      console.log("UA not loaded at registration time");
-    }
-  };
-  useEffect(() => {
-    if (!!window.UA) {
-      window.UA.then((sdk) => {
-        sdk.register();
-        console.log(sdk.channel.id);
-      });
-      console.log("UA loaded");
-    } else {
-      console.log("UA not loaded");
-    }
-  }, []);
+  // useEffect(() => {
+  //   const beamsClient = new window.PusherPushNotifications.Client({
+  //     instanceId: "7d44404f-7770-4948-bf86-5cc5e5ce77af",
+  //   });
+
+  //   beamsClient
+  //     .start()
+  //     .then(() => beamsClient.addDeviceInterest("hello"))
+  //     .then(() => console.log("Successfully registered and subscribed!"))
+  //     .catch(console.error);
+  // }, []);
+
+  const pusherRef = useRef();
+  // useEffect(() => {
+  //   window.Pusher.logToConsole = true;
+  //   var pusher = new window.Pusher("cd8eb32edfafcdf48975", {
+  //     cluster: "ap3",
+  //   });
+  //   var channel = pusher.subscribe("my-channel");
+  //   channel.bind("my-event", function (data) {
+  //     alert(JSON.stringify(data));
+  //   });
+  // }, []);
+
+  // const [user_id, setuser_id] = useState();
+  // const [statusMessage, setStatusMessage] = useState();
+  // const handleUserIdChange = (e) => {
+  //   setuser_id(e.target.value);
+  // };
+  // const register = (e) => {
+  //   if (!!window.UA) {
+  //     window.UA.then((sdk) => {
+  //       if (!!sdk.channel.id) {
+  //         sdk.channel.namedUser.set(user_id);
+  //         sdk.addEventListener("push", (e) => {
+  //           console.log(e);
+  //           setStatusMessage(
+  //             `Received message with title: ${e.push.title} and body: ${e.push.body}`
+  //           );
+  //         });
+  //         setStatusMessage(`${user_id} is registered. Waiting for message`);
+  //       } else console.log("UA channel not registered");
+  //     });
+  //   } else {
+  //     console.log("UA not loaded at registration time");
+  //   }
+  // };
+  // useEffect(() => {
+  //   if (!!window.UA) {
+  //     window.UA.then((sdk) => {
+  //       sdk.register();
+  //       console.log(sdk.channel.id);
+  //     });
+  //     console.log("UA loaded");
+  //   } else {
+  //     console.log("UA not loaded");
+  //   }
+  // }, []);
 
   return (
     <div className={styles.container}>
@@ -50,9 +74,19 @@ const Home: NextPage = () => {
       </Head>
 
       <main className={styles.main}>
-        <Script strategy="beforeInteractive" src="/airship.js"></Script>
+        {/* <Script strategy="beforeInteractive" src="/airship.js"></Script> */}
+        <Script
+          strategy="beforeInteractive"
+          src="https://js.pusher.com/7.0/pusher.min.js"
+        ></Script>
+        <Script
+          strategy="beforeInteractive"
+          src="https://js.pusher.com/beams/1.0/push-notifications-cdn.js"
+        ></Script>
+        <Script strategy="beforeInteractive" src="/beamclient.js"></Script>
+
         <h1>Welcome to AirShip Demo</h1>
-        <form>
+        {/* <form>
           <input
             type="text"
             id="user_id"
@@ -63,7 +97,7 @@ const Home: NextPage = () => {
         <button onClick={register}>Register</button>
         <div>
           <h3> {statusMessage} </h3>
-        </div>
+        </div> */}
         <h1 className={styles.title}>
           Welcome to <a href="https://nextjs.org">Next.js!</a>
         </h1>
